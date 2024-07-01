@@ -1,0 +1,66 @@
+h1 {
+    color: #fff;
+}
+
+p {
+    color: #ccc;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.btn-primary-custom {
+    background-color: #282C35; /* Dark background color */
+    color: #ffffff; /* White text color */
+    border-color: #ffffff; /* White border color */
+}
+
+.btn-primary-custom:hover {
+    background-color: #ffffff; /* White background color on hover */
+    color: #282C35; /* Dark text color on hover */
+}
+
+.btn-primary-custom:hover svg {
+    color: #282C35; /* Dark icon color on hover */
+}
+
+.img-fluid.reduced-size {
+    max-width: 80%; /* Reduce the size to 75% of its container */
+    height: auto;
+    margin-bottom: 40px;
+}
+
+#one {
+    margin-top: 100px;
+}
+/* 
+.footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+}
+
+.footer a {
+    color: #d3d3d3;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: white;
+}
+
+.footer .social-icons a {
+    font-size: 1.5rem;
+    margin: 0 10px;
+}
+
+.footer .social-icons {
+    margin-top: 10px;
+}
+
+.footer .copy-right {
+    margin-top: 20px;
+    font-size: 0.9rem;
+} */
