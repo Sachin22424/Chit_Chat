@@ -2,7 +2,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
-import "./Chat.css";
+import "../assets/Chat.css";
 import slider1 from '../assets/slider1.png';
 
 const Chat = () => {
@@ -31,37 +31,6 @@ const Chat = () => {
                     </div>
                 </div>
             </div>
-
-            <footer className="footer">
-                <div className="container text-center">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <h5>About Chit Chat</h5>
-                            <p>Chit Chat is a platform to make new friends, connect with people, and chat with strangers from all over the world.</p>
-                        </div>
-                        {/* <div className="col-md-4">
-                            <h5>Links</h5>
-                            <ul className="list-unstyled">
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">Features</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>
-                        </div>
-                        <div className="col-md-4">
-                            <h5>Follow Us</h5>
-                            <div className="social-icons">
-                                <a href="#" className="text-white"><FontAwesomeIcon icon={faFacebook} /></a>
-                                <a href="#" className="text-white"><FontAwesomeIcon icon={faTwitter} /></a>
-                                <a href="#" className="text-white"><FontAwesomeIcon icon={faInstagram} /></a>
-                            </div>
-                        </div> */}
-                    </div>
-                    <div className="copy-right">
-                        &copy; 2024 Chit Chat. All rights reserved.
-                    </div>
-                </div>
-            </footer>
-
         </>
     );
 };

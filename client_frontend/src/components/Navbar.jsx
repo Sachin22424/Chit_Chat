@@ -1,5 +1,5 @@
 import React from "react";
-import './Navbar.css'; // Ensure you import the CSS file
+import '../assets/Navbar.css'; // Ensure you import the CSS file
 import logo from '../assets/logo.png'; // Adjusted path to logo.png
 
 const Navbar = () => {
@@ -14,7 +14,7 @@ const Navbar = () => {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-                    <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <ul className="navbar-nav mx-auto mb-2 mb-lg-0" id="links">
                         <li className="nav-item">
                             <a className="nav-link active text-white mx-3" aria-current="page" href="/">Home</a>
                         </li>
