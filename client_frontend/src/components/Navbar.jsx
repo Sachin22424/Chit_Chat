@@ -1,8 +1,19 @@
-import React from "react";
-import '../assets/Navbar.css'; // Ensure you import the CSS file
-import logo from '../assets/logo.png'; // Adjusted path to logo.png
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import '../assets/Navbar.css'; 
+import logo from '../assets/logo.png'; 
 
 const Navbar = () => {
+    const { user, setUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("User");
+        setUser(null);
+        navigate("/login");
+    };
+
     return (
         <nav className="navbar navbar-expand-lg bg-dark">
             <div className="container-fluid">
@@ -25,7 +36,11 @@ const Navbar = () => {
                             <a className="nav-link text-white mx-3" href="#">Contact</a>
                         </li>
                     </ul>
-                    <a href="/login" className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Login</a>
+                    {user ? (
+                        <button onClick={handleLogout} className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Logout</button>
+                    ) : (
+                        <a href="/login" className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Login</a>
+                    )}
                 </div>
             </div>
         </nav>

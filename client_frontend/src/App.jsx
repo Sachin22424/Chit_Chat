@@ -8,24 +8,24 @@ import { Container } from "react-bootstrap";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { useContext } from "react";
-import { AuthContext } from "./context/AuthContext"; // Import AuthContext
+import { AuthContext } from "./context/AuthContext"; 
 
 function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
-  const hideNavbarAndFooter = isLoginPage || isRegisterPage; // Combine conditions
+  const hideNavbarAndFooter = isLoginPage || isRegisterPage;
 
-  const { user } = useContext(AuthContext); // Destructure user from AuthContext
+  const { user } = useContext(AuthContext);
 
   return (
     <>
       {!hideNavbarAndFooter && <Navbar />}
       <Container className="text-secondary">
         <Routes>
-          <Route path="/" element={user ? <Chat /> : <Login />} />
-          <Route path="/login" element={user ? <Chat /> : <Login />} />
-          <Route path="/register" element={user ? <Chat /> : <Register />} />
+          <Route path="/" element={<Chat />} />
+          <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+          <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Container>
