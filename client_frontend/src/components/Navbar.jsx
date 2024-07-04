@@ -37,7 +37,13 @@ const Navbar = () => {
                         </li>
                     </ul>
                     {user ? (
-                        <button onClick={handleLogout} className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Logout</button>
+                        <>
+                            <button onClick={handleLogout} className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Logout</button>
+                            <div className="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Successfully logged in as {user.email}</strong>
+                                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </>
                     ) : (
                         <a href="/login" className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Login</a>
                     )}
