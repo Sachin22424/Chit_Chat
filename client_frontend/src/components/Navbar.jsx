@@ -25,7 +25,7 @@ const Navbar = () => {
                             <a className="nav-link text-white mx-3" href="#">Contact</a>
                         </li>
                     </ul>
-                    <a href="/login" className="btn btn-outline-light login-btn">Login</a>
+                    <a href="/login" className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Login</a>
                 </div>
             </div>
         </nav>

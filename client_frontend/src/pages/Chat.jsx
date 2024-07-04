@@ -8,6 +8,7 @@ import slider1 from '../assets/slider1.png';
 const Chat = () => {
     return (
         <>
+            
             <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center text-white">
                 <div className="container">
                     <div className="row">
