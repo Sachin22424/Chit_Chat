@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { baseURL, getRequest } from "../utils/services";
+import { baseURL, getRequest , postRequest } from "../utils/services";
 
 export const ChatContext = createContext();
 
@@ -14,12 +14,12 @@ export const ChatContextProvider = ({ children, user }) => {
                 setIsUserChatsLoading(true);
                 setUserChatsError(null);
 
-                const response = await getRequest(`${baseURL}/chat/${user._id}`);
+                const response = await getRequest(`${baseURL}/chat/${user?._id}`);
 
                 setIsUserChatsLoading(false);
 
                 if (response.error) {
-                    setUserChatsError(response.message);
+                    setUserChatsError(response);
                 } else {
                     setUserChats(response);
                 }

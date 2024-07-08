@@ -95,3 +95,21 @@ const getUser = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, findUser, getUser };
+
+const deleteUser = async (req, res) => {
+    const userID = req.params.id;
+    console.log(`Deleting user with ID: ${userID}`);  // Log the user ID
+
+    try {
+        const user = await userModel.findByIdAndDelete(userID);
+        if (!user) {
+            return res.status(404).json({ error: true, message: "User not found" });
+        }
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (err) {
+        console.error("Error in deleteUser: ", err);  // Log any errors
+        res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+};
+
+module.exports = { registerUser, loginUser, findUser, getUser, deleteUser };

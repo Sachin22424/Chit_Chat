@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import '../assets/Footer.css';
 import insta from '../assets/img_instagram.svg';
 import git from '../assets/github.png';
 import linkedin from '../assets/linkedin.png';
 import mail from '../assets/img_email_white_a700.svg';
 import call from '../assets/img_call.svg';
+import { AuthContext } from "../context/AuthContext";
 
 function Footer() {
+    const { user } = useContext(AuthContext);
+
+    if (user) {
+        return null;
+    }
+
     return (
         <footer className="footer mt-auto py-4 bg-dark text-white">
             <div className="container my-3">
@@ -52,12 +59,9 @@ function Footer() {
                 <div className="text-center mt-4">
                     <p>Copyright © 2024 The Dot Store. All Rights Reserved</p>
                 </div>
-
                 <div className="text-center mt-4">
-                    <p>Designed and Developed by Sachin Maurya
-
-                        3rd Year, B.Tech, Computer Science and Bioscience,
-
+                    <p>Designed and Developed by Sachin Maurya<br />
+                        3rd Year, B.Tech, Computer Science and Bioscience,<br />
                         Indraprastha Institute of Information Technology Delhi</p>
                 </div>
             </div>

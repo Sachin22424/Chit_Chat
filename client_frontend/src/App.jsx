@@ -8,7 +8,8 @@ import { Container } from "react-bootstrap";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { useContext } from "react";
-import { AuthContext } from "./context/AuthContext"; 
+import { AuthContext } from "./context/AuthContext";
+import { ChatContextProvider } from "./context/ChatContext";
 
 function App() {
   const location = useLocation();
@@ -20,16 +21,18 @@ function App() {
 
   return (
     <>
-      {!hideNavbarAndFooter && <Navbar />}
-      <Container className="text-secondary">
-        <Routes>
-          <Route path="/" element={<Chat />} />
-          <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-          <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Container>
-      {!hideNavbarAndFooter && <Footer />}
+      <ChatContextProvider user ={user}>
+        {!hideNavbarAndFooter && <Navbar />}
+        <Container className="text-secondary">
+          <Routes>
+            <Route path="/" element={<Chat />} />
+            <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+            <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Container>
+        {!hideNavbarAndFooter && <Footer />}
+      </ChatContextProvider>
     </>
   );
 }
