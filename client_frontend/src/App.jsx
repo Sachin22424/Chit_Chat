@@ -23,14 +23,14 @@ function App() {
     <>
       <ChatContextProvider user ={user}>
         {!hideNavbarAndFooter && <Navbar />}
-        <Container className="text-secondary">
+        
           <Routes>
             <Route path="/" element={<Chat />} />
             <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
             <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </Container>
+    
         {!hideNavbarAndFooter && <Footer />}
       </ChatContextProvider>
     </>
