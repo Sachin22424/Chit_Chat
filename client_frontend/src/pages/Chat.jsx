@@ -6,46 +6,39 @@ import "../assets/Chat.css"; // Ensure the path is correct
 import slider1 from '../assets/slider1.png'; // Ensure the path is correct
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
-// import Navbar from '../components/Navbar'; // Importing the Navbar component
 import UserChat from "../components/UserChat";
-// import { use } from "../../../server_backend/Routes/userRoute";
-// import { getUser } from "../../../server_backend/Controllers/userController";
-import PotentialChats from "../components/PotentialChats";
+import ChatBox from "../components/ChatBox";
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
-  const { userChats, isUserChatsLoading, userChatsError } = useContext(ChatContext);
+  const { userChats, isUserChatsLoading, userChatsError, updateCurrentChat } = useContext(ChatContext);
 
-  console.log("userChats: ", userChats)
+  // console.log("userChats: ", userChats);
 
   return (
     <div className="container-fluid chat-container">
-      {/* {user && <Navbar />} */}
-      <PotentialChats/>
       {user ? (
         userChats?.length > 0 ? (
           <div className="users-column">
-
-            <div className="all-users p-3" >
-              {isUserChatsLoading && <p>Loading Chats..</p>}
+            <div className="all-users p-3">
+              {isUserChatsLoading && <p>Loading Chats...</p>}
               {userChats?.map((chat, index) => (
-                <UserChat key={index} chat={chat} user={user} />
+                <div key={index} onClick={() => updateCurrentChat(chat)}>
+                  <UserChat chat={chat} user={user} />
+                </div>
               ))}
             </div>
-
           </div>
-        ) : <p>No chats available</p>
-      ) :
-
-        (
-          null
-        )}
+        ) : (
+          <p>No chats available</p>
+        )
+      ) : null}
 
       <div className="chat-column">
         {user ? (
           <div className="d-flex flex-column">
             <div className="chat-header p-3">
-              <h5>Chat Box</h5>
+              <ChatBox />
             </div>
           </div>
         ) : (
@@ -53,7 +46,7 @@ const Chat = () => {
             <div className="container">
               <div className="row">
                 <div className="col-md-6 text-center mb-5" id="one">
-                  <h1 className="display-4 font-weight-bold ">
+                  <h1 className="display-4 font-weight-bold">
                     Talk to Anyone<br />Make friends!
                   </h1>
                   <p className="lead">

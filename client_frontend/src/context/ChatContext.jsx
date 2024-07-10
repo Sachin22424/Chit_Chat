@@ -1,68 +1,112 @@
-import { createContext, useState, useEffect } from "react";
-import { baseURL, getRequest , postRequest } from "../utils/services";
+import { createContext, useState, useEffect, useCallback } from "react";
+import { baseURL, getRequest, postRequest } from "../utils/services";
 
 export const ChatContext = createContext();
 
 export const ChatContextProvider = ({ children, user }) => {
-    const [userChats, setUserChats] = useState(null);
-    const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
-    const [userChatsError, setUserChatsError] = useState(null);
+  const [userChats, setUserChats] = useState(null);
+  const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
+  const [userChatsError, setUserChatsError] = useState(null);
 
-    const [potentialChats, setPotentialChats] = useState([]); // Added potentialChats state
+  const [potentialChats, setPotentialChats] = useState([]);
+  const [currentChat, setCurrentChat] = useState(null);
 
-    useEffect(() => {
-        const getUsers = async () => {
-            const response = await getRequest(`${baseURL}/user`);
-            
-            if (response.error) {  
-                return console.error("Error fetching users: ", response.error);
-            }
+  const [messages, setMessages] = useState(null);
+  const [isMessagesLoading, setIsMessagesLoading] = useState(false);
+  const [messagesError, setMessagesError] = useState(null);
 
-            const pChats = response.filter((u) =>{
-                let isChatCreated = false;
-                if(user._id === u._id) return false
-                
+  useEffect(() => {
+    const getUsers = async () => {
+      const response = await getRequest(`${baseURL}/user`);
+      if (response.error) {
+        return console.error("Error fetching users: ", response.error);
+      }
 
-                if(userChats){
-                    isChatCreated = userChats.some((chat) => {
-                        return chat.members[0] === u._id || chat.members[1] === u._id
-                    })
-                }
+      const pChats = response.filter((u) => {
+        let isChatCreated = false;
+        if (user?._id === u._id) return false;
 
-                return !isChatCreated
-            }
-            ); // Filter out the current user
+        if (userChats) {
+          isChatCreated = userChats.some((chat) => {
+            return chat.members.includes(u._id);
+          });
+        }
 
-            setPotentialChats(pChats);
-        };
-    
-        getUsers();
-    }, [userChats]); // Added 'user' as a dependency if you want this effect to run when 'user' changes
+        return !isChatCreated;
+      });
 
-    useEffect(() => {
-        const getUserChats = async () => {
-            if (user?._id) {
-                setIsUserChatsLoading(true);
-                setUserChatsError(null);
+      setPotentialChats(pChats);
+    };
 
-                const response = await getRequest(`${baseURL}/chat/${user?._id}`);
+    getUsers();
+  }, [user, userChats]);
 
-                setIsUserChatsLoading(false);
+  useEffect(() => {
+    const getUserChats = async () => {
+      if (user?._id) {
+        setIsUserChatsLoading(true);
+        setUserChatsError(null);
 
-                if (response.error) {
-                    setUserChatsError(response);
-                } else {
-                    setUserChats(response);
-                }
-            }
-        };
+        const response = await getRequest(`${baseURL}/chat/${user._id}`);
 
-        getUserChats();
-    }, [user]);
+        setIsUserChatsLoading(false);
 
-    return (
-        <ChatContext.Provider value={{ userChats, setUserChats, isUserChatsLoading, setIsUserChatsLoading, userChatsError, setUserChatsError , potentialChats }}>
-            {children}
-        </ChatContext.Provider>
-    );
+        if (response.error) {
+          setUserChatsError(response.error);
+        } else {
+          setUserChats(response);
+        }
+      }
+    };
+
+    getUserChats();
+  }, [user]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      setIsMessagesLoading(true);
+      setMessagesError(null);
+
+      const response = await getRequest(`${baseURL}/message/${currentChat?._id}`);
+
+      setIsMessagesLoading(false);
+
+      if (response.error) {
+        setMessagesError(response.error);
+      } else {
+        setMessages(response);
+      }
+    };
+
+    if (currentChat) {
+      getMessages();
+    }
+  }, [currentChat]);
+
+  const updateCurrentChat = useCallback((chat) => {
+    setCurrentChat(chat);
+  }, []);
+
+  const createChat = useCallback(async (firstId, secondId) => {
+    const response = await postRequest(`${baseURL}/chat`, JSON.stringify({ firstId, secondId }));
+
+    if (response.error) {
+      return console.error("Error creating chat: ", response.error);
+    } else {
+      setUserChats((prev) => [...prev, response]);
+    }
+  }, []);
+
+  return (
+    <ChatContext.Provider value={{
+      userChats, setUserChats,
+      isUserChatsLoading, setIsUserChatsLoading,
+      userChatsError, setUserChatsError,
+      potentialChats, createChat,
+      updateCurrentChat, currentChat,
+      messages, isMessagesLoading, messagesError
+    }}>
+      {children}
+    </ChatContext.Provider>
+  );
 };

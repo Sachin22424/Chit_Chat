@@ -21,15 +21,16 @@ function App() {
 
   return (
     <>
-      <ChatContextProvider user ={user}>
+      <ChatContextProvider user={user}>
         {!hideNavbarAndFooter && <Navbar />}
         
-          <Routes>
-            <Route path="/" element={<Chat />} />
-            <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-            <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+        <Routes>
+          <Route path="/" element={<Chat />} />
+          <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+          <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+          {/* <Route path="/potential-chats" element={<PotentialChats />} /> */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
     
         {!hideNavbarAndFooter && <Footer />}
       </ChatContextProvider>

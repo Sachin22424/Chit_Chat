@@ -8,7 +8,7 @@ export const useFetchRecipientUser = (chat, user) => {
   // Ensure chat and user are defined before accessing their properties
   const recipientId = chat?.members?.find((id) => id !== user?._id);
 
-  console.log("chat: ", chat);
+  // console.log("chat: ", chat);
 
   useEffect(() => {
     const getUser = async () => {
@@ -33,3 +33,5 @@ export const useFetchRecipientUser = (chat, user) => {
 
   return { recipientUser, error }; // Also return error to handle it outside the hook
 };
+
+// export default useFetchRecipientUser;
