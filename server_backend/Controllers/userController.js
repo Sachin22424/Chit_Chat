@@ -71,7 +71,7 @@ const loginUser = async (req, res) => {
 
 const findUser = async (req, res) => {
     const userID = req.params.id;
-    console.log(`Finding user with ID: ${userID}`);  // Log the user ID
+    // console.log(`Finding user with ID: ${userID}`);  // Log the user ID
 
     try {
         const user = await userModel.findById(userID);
