@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import { baseURL, getRequest, postRequest } from "../utils/services";
+import { io } from 'socket.io-client';
 
 export const ChatContext = createContext();
 
@@ -15,6 +16,65 @@ export const ChatContextProvider = ({ children, user }) => {
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
 
+  const [sendTextMessageError, setSendTextMessageError] = useState(null);
+  const [newMessage, setNewMessage] = useState(null);
+  const [socket, setSocket] = useState(null);
+
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  console.log("onlineUserssss : ", onlineUsers);
+
+  // initialize socket
+  useEffect(() => {
+    const newSocket = io("http://localhost:3000");
+    setSocket(newSocket);
+
+    return () => newSocket.disconnect();
+  }, [user]);
+
+
+  useEffect(() => {
+    if (socket === null) return;
+
+    socket.emit("addNewUser", user?._id);
+
+    socket.on("getOnlineUsers", (res) => {
+      setOnlineUsers(res);
+    });
+
+    return () => {
+      socket.off("getOnlineUsers");
+    };
+  }, [socket]);
+
+  // send message to socket
+  useEffect(() => {
+    if (socket === null || !newMessage) return;
+
+    const recipientId = currentChat?.members.find((member) => member !== user._id);
+
+    socket.emit("sendMessage", {...newMessage, recipientId});
+
+    return () => {
+      socket.off("sendMessage");
+    };
+  }, [socket, newMessage]);
+
+  // receive message from socket
+
+  useEffect(() => {
+    if (socket === null) return;
+
+    socket.on("getMessage", (message) => {
+      if(currentChat?._id !== message.chatId) return console.error("Message is not for this chat");
+      setMessages((prev) => [...prev, message]);
+    });
+
+    return () => {
+      socket.off("getMessage");
+    };
+  } , [socket , currentChat]);
+
   useEffect(() => {
     const getUsers = async () => {
       const response = await getRequest(`${baseURL}/user`);
@@ -24,7 +84,7 @@ export const ChatContextProvider = ({ children, user }) => {
 
       const pChats = response.filter((u) => {
         let isChatCreated = false;
-        if (user?._id === u._id) return false;
+        if (user?._id === u._id || u.isDeleted) return false; // Filter out deleted users
 
         if (userChats) {
           isChatCreated = userChats.some((chat) => {
@@ -54,7 +114,7 @@ export const ChatContextProvider = ({ children, user }) => {
         if (response.error) {
           setUserChatsError(response.error);
         } else {
-          setUserChats(response);
+          setUserChats(response.filter(chat => !chat.isDeleted)); // Filter out deleted users
         }
       }
     };
@@ -74,7 +134,7 @@ export const ChatContextProvider = ({ children, user }) => {
       if (response.error) {
         setMessagesError(response.error);
       } else {
-        setMessages(response);
+        setMessages(response.filter(message => !message.isDeleted)); // Filter out deleted messages
       }
     };
 
@@ -82,6 +142,21 @@ export const ChatContextProvider = ({ children, user }) => {
       getMessages();
     }
   }, [currentChat]);
+
+  // Send text message
+  const sendTextMessage = useCallback(async (textMessage, sender, currentChatId, setTextMessage) => {
+    if (!textMessage.trim()) return console.error("Message is empty");
+
+    const response = await postRequest(`${baseURL}/message`, JSON.stringify({ text: textMessage, senderId: sender, chatId: currentChatId }));
+
+    if (response.error) {
+      setSendTextMessageError(response.error);
+    } else {
+      setNewMessage(response);
+      setMessages((prev) => [...prev, response]);
+      setTextMessage(""); // Ensure setTextMessage is called correctly
+    }
+  }, []);
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
@@ -104,7 +179,7 @@ export const ChatContextProvider = ({ children, user }) => {
       userChatsError, setUserChatsError,
       potentialChats, createChat,
       updateCurrentChat, currentChat,
-      messages, isMessagesLoading, messagesError
+      messages, isMessagesLoading, messagesError, sendTextMessage, sendTextMessageError, newMessage, onlineUsers
     }}>
       {children}
     </ChatContext.Provider>

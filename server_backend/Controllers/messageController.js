@@ -26,4 +26,16 @@ const getMessages = async (req, res) => {
     }
 }
 
-module.exports = { createMessage, getMessages };
+const deleteMessages = async (req, res) => {
+    const { chatId } = req.params;
+
+    try {
+        await messageModel.deleteMany({ chatId });
+        res.status(200).json({ message: "Messages deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+module.exports = { createMessage, getMessages, deleteMessages };

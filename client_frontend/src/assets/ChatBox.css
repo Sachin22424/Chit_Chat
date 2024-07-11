@@ -38,7 +38,7 @@
 }
 
 .sent {
-  background-color: #003366;
+  background-color: #003366; /* Blue color */
   color: white;
   align-self: flex-end;
 }
@@ -49,13 +49,19 @@
   align-self: flex-start;
 }
 
-.message-input {
-  position: fixed; 
+.message-input-container {
+  position: fixed;
   width: 64%;
-  bottom: 0; 
+  bottom: 0;
   padding: 1rem;
   background-color: #26282b;
   border-top: 1px solid #343a40;
+}
+
+.input-group-custom {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .input-emoji {
@@ -68,14 +74,5 @@
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  margin-right: 10px;
-}
-
-button.btn-primary {
-  background-color: #007bff;
-  border: none;
-}
-
-button.btn-primary:hover {
-  background-color: #0056b3;
+  margin-left: 10px;
 }

@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
-import "../assets/Chat.css"; // Ensure the path is correct
-import slider1 from '../assets/slider1.png'; // Ensure the path is correct
+import "../assets/Chat.css";
+import slider1 from '../assets/slider1.png';
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import UserChat from "../components/UserChat";
@@ -11,27 +11,31 @@ import ChatBox from "../components/ChatBox";
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
-  const { userChats, isUserChatsLoading, userChatsError, updateCurrentChat } = useContext(ChatContext);
-
-  // console.log("userChats: ", userChats);
+  const { userChats, isUserChatsLoading, userChatsError, updateCurrentChat, potentialChats, createChat, onlineUsers } = useContext(ChatContext);
 
   return (
     <div className="container-fluid chat-container">
       {user ? (
-        userChats?.length > 0 ? (
-          <div className="users-column">
-            <div className="all-users p-3">
-              {isUserChatsLoading && <p>Loading Chats...</p>}
-              {userChats?.map((chat, index) => (
+        <div className="users-column">
+          <div className="all-users p-3">
+            {isUserChatsLoading && <p>Loading Chats...</p>}
+            {userChats?.length > 0 ? (
+              userChats.map((chat, index) => (
                 <div key={index} onClick={() => updateCurrentChat(chat)}>
-                  <UserChat chat={chat} user={user} />
+                  <UserChat chat={chat} user={user} onlineUsers={onlineUsers} />
                 </div>
-              ))}
-            </div>
+              ))
+            ) : (
+              <p>No chats available</p>
+            )}
+            <h3>Potential Chats</h3>
+            {potentialChats.map((potentialChat, index) => (
+              <div key={index} className="user-card" onClick={() => createChat(user._id, potentialChat._id)}>
+                <UserChat chat={potentialChat} user={user} onlineUsers={onlineUsers} />
+              </div>
+            ))}
           </div>
-        ) : (
-          <p>No chats available</p>
-        )
+        </div>
       ) : null}
 
       <div className="chat-column">
