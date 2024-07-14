@@ -7,9 +7,17 @@ import profile from '../assets/profile2.png';
 
 const UserChat = ({ chat, user: currentUser, onlineUsers }) => {
   const { recipientUser } = useFetchRecipientUser(chat, currentUser);
-  const { updateCurrentChat } = useContext(ChatContext);
+  const { updateCurrentChat, notifications } = useContext(ChatContext);
   
   const isOnline = onlineUsers?.some((user) => user?.userId === recipientUser?._id);
+
+  const unreadMessages = notifications.filter(notification => 
+    notification.senderId === recipientUser?._id && !notification.isRead
+  );
+
+  const latestReadMessage = notifications
+    .filter(notification => notification.senderId === recipientUser?._id && notification.isRead)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
 
   return (
     <>
@@ -30,6 +38,18 @@ const UserChat = ({ chat, user: currentUser, onlineUsers }) => {
             margin-left: -10px;
             margin-top: 10px;
           }
+          .this-user-notifications {
+            background-color: #097969;
+            border-radius: 50%;
+            color: white;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 43px;
+            margin-top: 5px;
+          }
         `}
       </style>
       <div className="user-card" onClick={() => updateCurrentChat(chat)}>
@@ -42,19 +62,12 @@ const UserChat = ({ chat, user: currentUser, onlineUsers }) => {
               <div className="text">Last message...</div>
             </div>
           </div>
-          <div className="date">12/22/2024 <br />
-            <div className="this-user-notifications" style={{
-              backgroundColor: '#097969',
-              borderRadius: '50%',
-              color: 'white',
-              width: '25px',
-              height: '25px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft: '43px',
-              marginTop: '5px',
-            }}>2</div>
+          <div className="date">
+            {latestReadMessage ? new Date(latestReadMessage.date).toLocaleDateString() : "No messages read"}
+            <br />
+            <div className="this-user-notifications">
+              {unreadMessages.length}
+            </div>
           </div>
         </div>
       </div>

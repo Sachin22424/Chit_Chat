@@ -1,8 +1,6 @@
 .dark-mode {
   background-color: #26282b;
   color: #ffffff;
-  margin-bottom: 10px;
-  margin-right: 100px;
 }
 
 .profile-icon {
@@ -10,6 +8,13 @@
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+.messages-container {
+  padding: 1rem;
+  max-width: 100%;
+  height: calc(100vh - 150px); /* Adjust this value to fit your layout */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .messages {

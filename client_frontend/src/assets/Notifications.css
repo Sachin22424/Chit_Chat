@@ -1,0 +1,61 @@
+.notification-box {
+    position: absolute;
+    top: 330px;
+    width: 320px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    color: #26282b;
+}
+
+.mark-as-read {
+    cursor: pointer;
+    color: blue;
+}
+
+.notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notification-item.unread {
+    background-color: white;
+    color: #26282b;
+}
+
+.notification-item.read {
+    background-color: #fff;
+}
+
+.notification-date {
+    font-size: 0.7rem;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.count-circle {
+    background-color: #097969; /* Blue background */
+    color: white; /* White text */
+    border-radius: 60%; /* Makes the background a circle */
+    padding: 0.05em; /* Adjusts the size of the circle */
+    display: inline-block; /* Allows us to set dimensions */
+    min-width: 1.6em; /* Ensures the circle size even if the count is a single digit */
+    text-align: center; /* Centers the text horizontally */
+    margin-left: 5px;
+}

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FaUser, FaComments, FaInfoCircle, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
+import Notifications from "./Notifications";
 import '../assets/Navbar.css';
 import logo from '../assets/logo.png';
 
@@ -53,7 +54,6 @@ const Navbar = () => {
                             <FaUser className="navbar-icon" />
                             <span>{user.name}</span>
                         </div>
-
                     </div>
                     <ul className="navbar-nav mt-4">
                         <li className="nav-item">
@@ -62,6 +62,7 @@ const Navbar = () => {
                                 <span>Chats</span>
                             </a>
                         </li>
+                        <Notifications />
                         <li className="nav-item">
                             <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>
                                 <FaInfoCircle className="navbar-icon" />

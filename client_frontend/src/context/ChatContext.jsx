@@ -5,183 +5,193 @@ import { io } from 'socket.io-client';
 export const ChatContext = createContext();
 
 export const ChatContextProvider = ({ children, user }) => {
-  const [userChats, setUserChats] = useState(null);
-  const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
-  const [userChatsError, setUserChatsError] = useState(null);
+    const [userChats, setUserChats] = useState(null);
+    const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
+    const [userChatsError, setUserChatsError] = useState(null);
 
-  const [potentialChats, setPotentialChats] = useState([]);
-  const [currentChat, setCurrentChat] = useState(null);
+    const [potentialChats, setPotentialChats] = useState([]);
+    const [currentChat, setCurrentChat] = useState(null);
 
-  const [messages, setMessages] = useState(null);
-  const [isMessagesLoading, setIsMessagesLoading] = useState(false);
-  const [messagesError, setMessagesError] = useState(null);
+    const [messages, setMessages] = useState(null);
+    const [isMessagesLoading, setIsMessagesLoading] = useState(false);
+    const [messagesError, setMessagesError] = useState(null);
 
-  const [sendTextMessageError, setSendTextMessageError] = useState(null);
-  const [newMessage, setNewMessage] = useState(null);
-  const [socket, setSocket] = useState(null);
+    const [sendTextMessageError, setSendTextMessageError] = useState(null);
+    const [newMessage, setNewMessage] = useState(null);
+    const [socket, setSocket] = useState(null);
+    const [onlineUsers, setOnlineUsers] = useState([]);
+    const [notifications, setNotifications] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
 
-  const [onlineUsers, setOnlineUsers] = useState([]);
+    // Initialize socket
+    useEffect(() => {
+        const newSocket = io("http://localhost:3000");
+        setSocket(newSocket);
 
-  console.log("onlineUserssss : ", onlineUsers);
+        return () => newSocket.disconnect();
+    }, [user]);
 
-  // initialize socket
-  useEffect(() => {
-    const newSocket = io("http://localhost:3000");
-    setSocket(newSocket);
+    useEffect(() => {
+        if (socket === null) return;
 
-    return () => newSocket.disconnect();
-  }, [user]);
+        socket.emit("addNewUser", user?._id);
 
+        socket.on("getOnlineUsers", (res) => {
+            setOnlineUsers(res);
+        });
 
-  useEffect(() => {
-    if (socket === null) return;
+        return () => {
+            socket.off("getOnlineUsers");
+        };
+    }, [socket]);
 
-    socket.emit("addNewUser", user?._id);
+    // Send message to socket
+    useEffect(() => {
+        if (socket === null || !newMessage) return;
 
-    socket.on("getOnlineUsers", (res) => {
-      setOnlineUsers(res);
-    });
+        const recipientId = currentChat?.members.find((member) => member !== user._id);
 
-    return () => {
-      socket.off("getOnlineUsers");
-    };
-  }, [socket]);
+        socket.emit("sendMessage", { ...newMessage, recipientId });
 
-  // send message to socket
-  useEffect(() => {
-    if (socket === null || !newMessage) return;
+        return () => {
+            socket.off("sendMessage");
+        };
+    }, [socket, newMessage]);
 
-    const recipientId = currentChat?.members.find((member) => member !== user._id);
+    // Receive message and notifications from socket
+    useEffect(() => {
+        if (socket === null) return;
 
-    socket.emit("sendMessage", {...newMessage, recipientId});
+        socket.on("getMessage", (message) => {
+            if (currentChat?._id !== message.chatId) return console.error("Message is not for this chat");
+            setMessages((prev) => [...prev, message]);
+        });
 
-    return () => {
-      socket.off("sendMessage");
-    };
-  }, [socket, newMessage]);
+        socket.on("getNotification", (res) => {
+            const isChatOpen = currentChat?.members.some(id => id === res.senderId);
 
-  // receive message from socket
+            if (isChatOpen) {
+                setNotifications((prev) => [{ ...res, isRead: true }, ...prev]);
+            } else {
+                setNotifications((prev) => [res, ...prev]);
+            }
+        });
 
-  useEffect(() => {
-    if (socket === null) return;
+        return () => {
+            socket.off("getMessage");
+            socket.off("getNotification");
+        };
+    }, [socket, currentChat]);
 
-    socket.on("getMessage", (message) => {
-      if(currentChat?._id !== message.chatId) return console.error("Message is not for this chat");
-      setMessages((prev) => [...prev, message]);
-    });
+    useEffect(() => {
+        const getUsers = async () => {
+            const response = await getRequest(`${baseURL}/user`);
+            if (response.error) {
+                return console.error("Error fetching users: ", response.error);
+            }
 
-    return () => {
-      socket.off("getMessage");
-    };
-  } , [socket , currentChat]);
+            const pChats = response.filter((u) => {
+                let isChatCreated = false;
+                if (user?._id === u._id || u.isDeleted) return false;
 
-  useEffect(() => {
-    const getUsers = async () => {
-      const response = await getRequest(`${baseURL}/user`);
-      if (response.error) {
-        return console.error("Error fetching users: ", response.error);
-      }
+                if (userChats) {
+                    isChatCreated = userChats.some((chat) => {
+                        return chat.members.includes(u._id);
+                    });
+                }
 
-      const pChats = response.filter((u) => {
-        let isChatCreated = false;
-        if (user?._id === u._id || u.isDeleted) return false; // Filter out deleted users
+                return !isChatCreated;
+            });
 
-        if (userChats) {
-          isChatCreated = userChats.some((chat) => {
-            return chat.members.includes(u._id);
-          });
+            setPotentialChats(pChats);
+            setAllUsers(response);
+        };
+
+        getUsers();
+    }, [user, userChats]);
+
+    useEffect(() => {
+        const getUserChats = async () => {
+            if (user?._id) {
+                setIsUserChatsLoading(true);
+                setUserChatsError(null);
+
+                const response = await getRequest(`${baseURL}/chat/${user._id}`);
+
+                setIsUserChatsLoading(false);
+
+                if (response.error) {
+                    setUserChatsError(response.error);
+                } else {
+                    setUserChats(response.filter(chat => !chat.isDeleted));
+                }
+            }
+        };
+
+        getUserChats();
+    }, [user]);
+
+    useEffect(() => {
+        const getMessages = async () => {
+            setIsMessagesLoading(true);
+            setMessagesError(null);
+
+            const response = await getRequest(`${baseURL}/message/${currentChat?._id}`);
+
+            setIsMessagesLoading(false);
+
+            if (response.error) {
+                setMessagesError(response.error);
+            } else {
+                setMessages(response.filter(message => !message.isDeleted));
+            }
+        };
+
+        if (currentChat) {
+            getMessages();
         }
+    }, [currentChat]);
 
-        return !isChatCreated;
-      });
+    // Send text message
+    const sendTextMessage = useCallback(async (textMessage, sender, currentChatId, setTextMessage) => {
+        if (!textMessage.trim()) return console.error("Message is empty");
 
-      setPotentialChats(pChats);
-    };
-
-    getUsers();
-  }, [user, userChats]);
-
-  useEffect(() => {
-    const getUserChats = async () => {
-      if (user?._id) {
-        setIsUserChatsLoading(true);
-        setUserChatsError(null);
-
-        const response = await getRequest(`${baseURL}/chat/${user._id}`);
-
-        setIsUserChatsLoading(false);
+        const response = await postRequest(`${baseURL}/message`, JSON.stringify({ text: textMessage, senderId: sender, chatId: currentChatId }));
 
         if (response.error) {
-          setUserChatsError(response.error);
+            setSendTextMessageError(response.error);
         } else {
-          setUserChats(response.filter(chat => !chat.isDeleted)); // Filter out deleted users
+            setNewMessage(response);
+            setMessages((prev) => [...prev, response]);
+            setTextMessage(""); // Ensure setTextMessage is called correctly
         }
-      }
-    };
+    }, []);
 
-    getUserChats();
-  }, [user]);
+    const updateCurrentChat = useCallback((chat) => {
+        setCurrentChat(chat);
+    }, []);
 
-  useEffect(() => {
-    const getMessages = async () => {
-      setIsMessagesLoading(true);
-      setMessagesError(null);
+    const createChat = useCallback(async (firstId, secondId) => {
+        const response = await postRequest(`${baseURL}/chat`, JSON.stringify({ firstId, secondId }));
 
-      const response = await getRequest(`${baseURL}/message/${currentChat?._id}`);
+        if (response.error) {
+            return console.error("Error creating chat: ", response.error);
+        } else {
+            setUserChats((prev) => [...prev, response]);
+        }
+    }, []);
 
-      setIsMessagesLoading(false);
-
-      if (response.error) {
-        setMessagesError(response.error);
-      } else {
-        setMessages(response.filter(message => !message.isDeleted)); // Filter out deleted messages
-      }
-    };
-
-    if (currentChat) {
-      getMessages();
-    }
-  }, [currentChat]);
-
-  // Send text message
-  const sendTextMessage = useCallback(async (textMessage, sender, currentChatId, setTextMessage) => {
-    if (!textMessage.trim()) return console.error("Message is empty");
-
-    const response = await postRequest(`${baseURL}/message`, JSON.stringify({ text: textMessage, senderId: sender, chatId: currentChatId }));
-
-    if (response.error) {
-      setSendTextMessageError(response.error);
-    } else {
-      setNewMessage(response);
-      setMessages((prev) => [...prev, response]);
-      setTextMessage(""); // Ensure setTextMessage is called correctly
-    }
-  }, []);
-
-  const updateCurrentChat = useCallback((chat) => {
-    setCurrentChat(chat);
-  }, []);
-
-  const createChat = useCallback(async (firstId, secondId) => {
-    const response = await postRequest(`${baseURL}/chat`, JSON.stringify({ firstId, secondId }));
-
-    if (response.error) {
-      return console.error("Error creating chat: ", response.error);
-    } else {
-      setUserChats((prev) => [...prev, response]);
-    }
-  }, []);
-
-  return (
-    <ChatContext.Provider value={{
-      userChats, setUserChats,
-      isUserChatsLoading, setIsUserChatsLoading,
-      userChatsError, setUserChatsError,
-      potentialChats, createChat,
-      updateCurrentChat, currentChat,
-      messages, isMessagesLoading, messagesError, sendTextMessage, sendTextMessageError, newMessage, onlineUsers
-    }}>
-      {children}
-    </ChatContext.Provider>
-  );
+    return (
+        <ChatContext.Provider value={{
+            userChats, setUserChats,
+            isUserChatsLoading, setIsUserChatsLoading,
+            userChatsError, setUserChatsError,
+            potentialChats, createChat,
+            updateCurrentChat, currentChat,
+            messages, isMessagesLoading, messagesError, sendTextMessage, sendTextMessageError, newMessage, onlineUsers,
+            notifications, setNotifications, allUsers
+        }}>
+            {children}
+        </ChatContext.Provider>
+    );
 };
