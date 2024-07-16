@@ -4,12 +4,14 @@ import '../assets/Notifications.css';
 import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
 import { unreadNotificationsFunction } from '../utils/unreadNotifications';
+import tingSound from '../assets/ting.mp3'; // Add the path to your sound file
 
 const Notifications = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { user } = useContext(AuthContext);
     const { notifications, allUsers, setNotifications, userChats, updateCurrentChat } = useContext(ChatContext);
     const notificationBoxRef = useRef(null);
+    const audioRef = useRef(new Audio(tingSound));
 
     const unreadNotifications = unreadNotificationsFunction(notifications);
 
@@ -60,6 +62,12 @@ const Notifications = () => {
         }
     };
 
+    const playSound = () => {
+        audioRef.current.play().catch(error => {
+            console.error("Error playing sound:", error);
+        });
+    };
+
     useEffect(() => {
         if (isOpen) {
             document.addEventListener('mousedown', handleClickOutside);
@@ -70,6 +78,12 @@ const Notifications = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isOpen]);
+
+    useEffect(() => {
+        if (notifications.length > 0) {
+            playSound();
+        }
+    }, [notifications]);
 
     return (
         <>

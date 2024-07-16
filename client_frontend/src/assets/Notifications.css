@@ -63,10 +63,10 @@
 .total-unread-count {
     background-color: #097969;
     color: white;
-    border-radius: 50%;
+    border-radius: 47%;
     padding: 0.001em 0.4em;
     position: absolute;
     top: -15px;
     right: -20px; 
-    font-size: 0.8rem;
+    font-size: 0.6rem;
 }
