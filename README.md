@@ -27,9 +27,9 @@ Follow these steps to set up and run the project locally.
 
 2. Set Up Client Frontend
 
-      cd client_frontend
-      npm install
-      npm run dev
+        cd client_frontend
+        npm install
+        npm run dev
    
 3. Set Up Server Backend
    
