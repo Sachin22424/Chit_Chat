@@ -1,4 +1,4 @@
-                                                                                  Chit Chat Website:
+Chit Chat Website:
                                                                                   
 Chit Chat is a real-time online chat application built using MongoDB for data storage, JavaScript for the backend, React with Vite for the frontend, and Socket.IO for real-time communication.
 
@@ -22,8 +22,8 @@ Follow these steps to set up and run the project locally.
 
 1. Clone the Repository:
    
-    git clone https://github.com/yourusername/ChitChat.git
-    cd ChitChat
+  git clone https://github.com/yourusername/ChitChat.git
+  cd ChitChat
 
 2. Set Up Client Frontend
 
