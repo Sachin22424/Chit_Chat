@@ -13,6 +13,8 @@ const Notifications = () => {
 
     const unreadNotifications = unreadNotificationsFunction(notifications);
 
+    const totalUnreadCount = unreadNotifications.length;
+
     const aggregatedNotifications = unreadNotifications.reduce((acc, curr) => {
         const sender = allUsers.find(u => u._id === curr.senderId);
         const formattedDate = new Date(curr.date).toLocaleString();
@@ -72,9 +74,12 @@ const Notifications = () => {
     return (
         <>
             <li className="nav-item" onClick={toggleNotificationBox}>
-                <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>
+                <a href="#" style={{ color: 'inherit', textDecoration: 'none', position: 'relative' }}>
                     <FaBell className="navbar-icon" />
                     <span>Alerts</span>
+                    {totalUnreadCount > 0 && (
+                        <span className="total-unread-count">{totalUnreadCount}</span>
+                    )}
                 </a>
             </li>
 

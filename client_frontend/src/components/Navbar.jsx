@@ -33,10 +33,10 @@ const Navbar = () => {
                                 <a className="nav-link active text-white mx-3" aria-current="page" href="/">Home</a>
                             </li>
                             <li className="nav-item1">
-                                <a className="nav-link text-white mx-3" href="#">About</a>
+                                <a className="nav-link text-white mx-3" href="/about">About</a>
                             </li>
                             <li className="nav-item1">
-                                <a className="nav-link text-white mx-3" href="#">Contact</a>
+                                <a className="nav-link text-white mx-3" href="/contact">Contact</a>
                             </li>
                         </ul>
                         <a href="/login" className="btn btn-outline-light login-btn" style={{ width: '80px' }}>Login</a>
@@ -64,13 +64,13 @@ const Navbar = () => {
                         </li>
                         <Notifications />
                         <li className="nav-item">
-                            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <a href="/about" style={{ color: 'inherit', textDecoration: 'none' }}>
                                 <FaInfoCircle className="navbar-icon" />
                                 <span>About</span>
                             </a>
                         </li>
                         <li className="nav-item mb-4">
-                            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            <a href="/contact" style={{ color: 'inherit', textDecoration: 'none' }}>
                                 <FaQuestionCircle className="navbar-icon" />
                                 <span>Help</span>
                             </a>

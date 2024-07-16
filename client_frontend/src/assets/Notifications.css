@@ -50,12 +50,23 @@
 }
 
 .count-circle {
-    background-color: #097969; /* Blue background */
-    color: white; /* White text */
-    border-radius: 60%; /* Makes the background a circle */
-    padding: 0.05em; /* Adjusts the size of the circle */
-    display: inline-block; /* Allows us to set dimensions */
-    min-width: 1.6em; /* Ensures the circle size even if the count is a single digit */
-    text-align: center; /* Centers the text horizontally */
+    background-color: #097969;
+    color: white;
+    border-radius: 50%;
+    padding: 0.05em;
+    display: inline-block;
+    min-width: 1.6em;
+    text-align: center;
     margin-left: 5px;
+}
+
+.total-unread-count {
+    background-color: #097969;
+    color: white;
+    border-radius: 50%;
+    padding: 0.001em 0.4em;
+    position: absolute;
+    top: -15px;
+    right: -20px; 
+    font-size: 0.8rem;
 }

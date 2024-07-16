@@ -51,8 +51,8 @@ function Footer() {
                         <h4>Navigation Links</h4>
                         <ul className="list-unstyled">
                             <li><a href="#" className="text-white">Home</a></li>
-                            <li><a href="#" className="text-white">About</a></li>
-                            <li><a href="#" className="text-white">Contact</a></li>
+                            <li><a href="/about" className="text-white">About</a></li>
+                            <li><a href="/contact" className="text-white">Contact</a></li>
                         </ul>
                     </div>
                 </div>

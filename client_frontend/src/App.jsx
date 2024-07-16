@@ -1,7 +1,10 @@
+import React from 'react';
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Chat from "./pages/Chat";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import About from "./pages/About"; // Import About component
+import Contact from "./pages/Contact"; // Import Contact component
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Container } from "react-bootstrap";
@@ -28,7 +31,8 @@ function App() {
           <Route path="/" element={<Chat />} />
           <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
           <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-          {/* <Route path="/potential-chats" element={<PotentialChats />} /> */}
+          <Route path="/about" element={<About />} /> {/* Add About route */}
+          <Route path="/contact" element={<Contact />} /> {/* Add Contact route */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
     
