@@ -22,28 +22,28 @@ Follow these steps to set up and run the project locally.
 
 1. Clone the Repository:
    
-  git clone https://github.com/yourusername/ChitChat.git
-  cd ChitChat
+      git clone https://github.com/yourusername/ChitChat.git
+      cd ChitChat
 
 2. Set Up Client Frontend
 
-  cd client_frontend
-  npm install
-  npm run dev
+      cd client_frontend
+      npm install
+      npm run dev
    
 3. Set Up Server Backend
    
 Open a new terminal window or tab:
 
-  cd server_backend
-  nodemon
+      cd server_backend
+      nodemon
 
 4. Set Up Socket Server
    
 Open another new terminal window or tab:
 
-  cd soket
-  nodemon
+      cd soket
+      nodemon
 
 
 Technologies Used
