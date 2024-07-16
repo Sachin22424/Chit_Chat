@@ -8,10 +8,16 @@ import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import UserChat from "../components/UserChat";
 import ChatBox from "../components/ChatBox";
+import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
   const { userChats, isUserChatsLoading, userChatsError, updateCurrentChat, potentialChats, createChat, onlineUsers } = useContext(ChatContext);
+  const navigate = useNavigate(); // Initialize the useNavigate hook
+
+  const handleTextChatClick = () => {
+    navigate('/login'); // Navigate to the login page
+  };
 
   return (
     <div className="container-fluid chat-container">
@@ -57,7 +63,10 @@ const Chat = () => {
                     Experience a random chat alternative to find friends, connect with people, and chat with strangers from all over the world!
                   </p>
                   <div className="d-flex justify-content-center mt-4">
-                    <button className="btn btn-primary-custom btn-lg d-flex align-items-center">
+                    <button 
+                      className="btn btn-primary-custom btn-lg d-flex align-items-center"
+                      onClick={handleTextChatClick} // Add the onClick event handler
+                    >
                       <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
                       <span style={{ marginLeft: '8px' }}>Text Chat</span>
                     </button>
