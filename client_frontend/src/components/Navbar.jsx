@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaComments, FaInfoCircle, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaComments, FaInfoCircle, FaQuestionCircle, FaSignOutAlt, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import Notifications from "./Notifications";
 import '../assets/Navbar.css';
 import logo from '../assets/logo.png';
@@ -9,11 +9,16 @@ import logo from '../assets/logo.png';
 const Navbar = () => {
     const { user, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [soundEnabled, setSoundEnabled] = useState(true);
 
     const handleLogout = () => {
         localStorage.removeItem("User");
         setUser(null);
         navigate("/login");
+    };
+
+    const toggleSound = () => {
+        setSoundEnabled(!soundEnabled);
     };
 
     if (!user) {
@@ -62,7 +67,7 @@ const Navbar = () => {
                                 <span>Chats</span>
                             </a>
                         </li>
-                        <Notifications />
+                        <Notifications soundEnabled={soundEnabled} />
                         <li className="nav-item">
                             <a href="/about" style={{ color: 'inherit', textDecoration: 'none' }}>
                                 <FaInfoCircle className="navbar-icon" />
@@ -80,6 +85,12 @@ const Navbar = () => {
                                 <FaSignOutAlt className="navbar-icon" />
                                 <span>Logout</span>
                             </a>
+                        </li>
+                        <li className="nav-item">
+                            <div className="nav-link sound-icon" onClick={toggleSound}>
+                                {soundEnabled ? <FaVolumeUp className="navbar-icon white-color" /> : <FaVolumeMute className="navbar-icon white-color" />}
+                                <span className="white-color">{soundEnabled ? "on" : "off"}</span>
+                            </div>
                         </li>
                     </ul>
                 </div>
