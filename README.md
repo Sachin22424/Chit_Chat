@@ -1,4 +1,4 @@
-    #Chit Chat Website:
+Chit Chat Website:
                                                                                   
 Chit Chat is a real-time online chat application built using MongoDB for data storage, JavaScript for the backend, React with Vite for the frontend, and Socket.IO for real-time communication.
 
