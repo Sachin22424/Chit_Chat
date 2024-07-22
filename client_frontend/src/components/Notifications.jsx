@@ -12,6 +12,7 @@ const Notifications = ({ soundEnabled }) => {
     const { notifications, allUsers, setNotifications, userChats, updateCurrentChat } = useContext(ChatContext);
     const notificationBoxRef = useRef(null);
     const audioRef = useRef(new Audio(tingSound));
+    const previousNotificationsLength = useRef(notifications.length);
 
     const unreadNotifications = unreadNotificationsFunction(notifications);
 
@@ -82,9 +83,10 @@ const Notifications = ({ soundEnabled }) => {
     }, [isOpen]);
 
     useEffect(() => {
-        if (notifications.length > 0) {
+        if (notifications.length > previousNotificationsLength.current) {
             playSound();
         }
+        previousNotificationsLength.current = notifications.length;
     }, [notifications]);
 
     return (
